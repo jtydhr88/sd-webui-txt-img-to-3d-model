@@ -56,9 +56,7 @@ def generate(mode, batch_size, prompt, use_karras, karras_steps, init_image):
     model_kwargs = dict(texts=[prompt] * batch_size)
 
     if mode == "img":
-        image = load_image(init_image)
-
-        model_kwargs = dict(images=[image] * batch_size)
+        model_kwargs = dict(images=[init_image] * batch_size)
 
         guidance_scale = 3
 
@@ -116,7 +114,7 @@ def on_ui_tabs():
             with gr.Column():
                 mode = gr.Dropdown(["txt", "img"], label="Mode", value="img")
                 prompt_txt = gr.Textbox(label="Prompt", lines=2)
-                init_image = gr.Image(type="filepath")
+                init_image = gr.Image(type="pil")
                 batch_size_slider = gr.Slider(minimum=1, maximum=10, default=2, value=2, step=1, label="Batch Size",
                                               interactive=True)
                 use_karras = gr.Checkbox(label="Use Karras", value=True)
