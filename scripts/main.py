@@ -25,6 +25,7 @@ from shap_e.util.notebooks import create_pan_cameras, decode_latent_images, gif_
 from shap_e.util.notebooks import decode_latent_mesh
 from shap_e.util.image_util import load_image
 
+
 class Script(scripts.Script):
     def __init__(self) -> None:
         super().__init__()
@@ -39,8 +40,10 @@ class Script(scripts.Script):
         return ()
 
 
-def generate(mode, batch_size, prompt, use_karras, karras_steps, init_image):
+def generate(mode, batch_size, prompt, use_karras, karras_steps, init_image, clip_denoised, use_fp16):
     print("mode:" + mode)
+    print("clip_denoised:" + str(clip_denoised))
+    print("use_fp16:" + str(use_fp16))
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -69,8 +72,8 @@ def generate(mode, batch_size, prompt, use_karras, karras_steps, init_image):
         guidance_scale=guidance_scale,
         model_kwargs=model_kwargs,
         progress=True,
-        clip_denoised=True,
-        use_fp16=True,
+        clip_denoised=clip_denoised,
+        use_fp16=use_fp16,
         use_karras=use_karras,
         karras_steps=karras_steps,
         sigma_min=1e-3,
@@ -118,15 +121,19 @@ def on_ui_tabs():
                 batch_size_slider = gr.Slider(minimum=1, maximum=10, default=2, value=2, step=1, label="Batch Size",
                                               interactive=True)
                 use_karras = gr.Checkbox(label="Use Karras", value=True)
-                karras_steps_slider = gr.Slider(minimum=1, maximum=100, default=64, value=64, step=1, label="Karras Steps",
+                karras_steps_slider = gr.Slider(minimum=1, maximum=100, default=64, value=64, step=1,
+                                                label="Karras Steps",
                                                 interactive=True)
+                clip_denoised = gr.Checkbox(label="Clip Denoised", value=True)
+                use_fp16 = gr.Checkbox(label="Use fp16", value=True)
                 btn = gr.Button(value="Submit")
             with gr.Column():
-                output = gr.Model3D(clear_color=[0.0, 0.0, 0.0, 0.0],  label="3D Model")
+                output1 = gr.Model3D(clear_color=[0.0, 0.0, 0.0, 0.0], label="3D Model")
 
         btn.click(fn=generate,
-                  inputs=[mode, batch_size_slider, prompt_txt, use_karras, karras_steps_slider, init_image],
-                  outputs=[output])
+                  inputs=[mode, batch_size_slider, prompt_txt, use_karras, karras_steps_slider, init_image,
+                          clip_denoised, use_fp16],
+                  outputs=output1)
 
     return [(shap_e, "Txt/Img to 3D Model", "txt_img_to_3d_model")]
 
