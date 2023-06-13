@@ -40,7 +40,8 @@ class Script(scripts.Script):
         return ()
 
 
-def generate(mode, batch_size, prompt, use_karras, karras_steps, init_image, clip_denoised, use_fp16):
+def generate(mode, batch_size, prompt, use_karras, karras_steps, init_image, clip_denoised, use_fp16, guidance_scale,
+             s_churn):
     print("mode:" + mode)
     print("clip_denoised:" + str(clip_denoised))
     print("use_fp16:" + str(use_fp16))
@@ -54,14 +55,10 @@ def generate(mode, batch_size, prompt, use_karras, karras_steps, init_image, cli
     model = load_model(model_name, device=device)
     diffusion = diffusion_from_config(load_config('diffusion'))
 
-    guidance_scale = 15.0
-
     model_kwargs = dict(texts=[prompt] * batch_size)
 
     if mode == "img":
         model_kwargs = dict(images=[init_image] * batch_size)
-
-        guidance_scale = 3
 
     print("loaded model:" + model_name)
 
@@ -78,7 +75,7 @@ def generate(mode, batch_size, prompt, use_karras, karras_steps, init_image, cli
         karras_steps=karras_steps,
         sigma_min=1e-3,
         sigma_max=160,
-        s_churn=0,
+        s_churn=s_churn,
     )
 
     print("sample_latents done")
@@ -126,13 +123,19 @@ def on_ui_tabs():
                                                 interactive=True)
                 clip_denoised = gr.Checkbox(label="Clip Denoised", value=True)
                 use_fp16 = gr.Checkbox(label="Use fp16", value=True)
+                guidance_scale_slider = gr.Slider(minimum=1, maximum=20, default=3, value=3, step=1,
+                                                  label="Guidance Scale",
+                                                  interactive=True)
+                s_churn_slider = gr.Slider(minimum=0, maximum=5, default=0, value=0, step=1,
+                                           label="S Churn",
+                                           interactive=True)
                 btn = gr.Button(value="Submit")
             with gr.Column():
                 output1 = gr.Model3D(clear_color=[0.0, 0.0, 0.0, 0.0], label="3D Model")
 
         btn.click(fn=generate,
                   inputs=[mode, batch_size_slider, prompt_txt, use_karras, karras_steps_slider, init_image,
-                          clip_denoised, use_fp16],
+                          clip_denoised, use_fp16, guidance_scale_slider, s_churn_slider],
                   outputs=output1)
 
     return [(shap_e, "Txt/Img to 3D Model", "txt_img_to_3d_model")]
