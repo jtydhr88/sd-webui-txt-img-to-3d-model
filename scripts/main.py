@@ -92,20 +92,27 @@ def generate(mode, batch_size, prompt, use_karras, karras_steps, init_image, cli
 
     timestamp = int(time.time())
 
+    try:
+        output_format = opts.txtimg_to_3d_model_output_format
+    except:
+        output_format = 'obj'
+
     for i, latent in enumerate(latents):
-        output_file_ply_path = os.path.join(output_dir, f'mesh_{timestamp}_{i}.ply')
-        output_file_obj_path = os.path.join(output_dir, f'mesh_{timestamp}_{i}.obj')
+        output_file_path = os.path.join(output_dir, f'mesh_{timestamp}_{i}.{output_format}')
 
         t = decode_latent_mesh(xm, latent).tri_mesh()
 
-        with open(output_file_ply_path, 'wb') as f:
-            t.write_ply(f)
-        with open(output_file_obj_path, 'w') as f:
-            t.write_obj(f)
+        if output_format == 'obj':
+            with open(output_file_path, 'w') as f:
+                t.write_obj(f)
+        else:
+            with open(output_file_path, 'wb') as f:
+                t.write_ply(f)
+
 
     print("output mesh done")
 
-    return output_file_obj_path
+    return output_file_path
 
 
 def on_ui_tabs():
@@ -141,4 +148,10 @@ def on_ui_tabs():
     return [(shap_e, "Txt/Img to 3D Model", "txt_img_to_3d_model")]
 
 
+def on_ui_settings():
+    section = ('txtimg_to_3d_model', "Txt/Img To 3d Model")
+    shared.opts.add_option("txtimg_to_3d_model_output_format", shared.OptionInfo(
+        "obj", "Output format (Only obj format can preview on the page)", gr.Radio, {"choices": ['obj', 'ply']}, section=section))
+
+script_callbacks.on_ui_settings(on_ui_settings)
 script_callbacks.on_ui_tabs(on_ui_tabs)
