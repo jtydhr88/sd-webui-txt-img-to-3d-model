@@ -97,8 +97,13 @@ def generate(mode, batch_size, prompt, use_karras, karras_steps, init_image, cli
     except:
         output_format = 'obj'
 
+    try:
+        output_prefix = opts.txtimg_to_3d_model_output_prefix
+    except:
+        output_prefix = 'mesh'
+
     for i, latent in enumerate(latents):
-        output_file_path = os.path.join(output_dir, f'mesh_{timestamp}_{i}.{output_format}')
+        output_file_path = os.path.join(output_dir, f'{output_prefix}_{timestamp}_{i}.{output_format}')
 
         t = decode_latent_mesh(xm, latent).tri_mesh()
 
@@ -152,6 +157,8 @@ def on_ui_settings():
     section = ('txtimg_to_3d_model', "Txt/Img To 3d Model")
     shared.opts.add_option("txtimg_to_3d_model_output_format", shared.OptionInfo(
         "obj", "Output format (Only obj format can preview on the page)", gr.Radio, {"choices": ['obj', 'ply']}, section=section))
+    shared.opts.add_option("txtimg_to_3d_model_output_prefix", shared.OptionInfo(
+        "mesh", "Out Prefix", None, section=section))
 
 script_callbacks.on_ui_settings(on_ui_settings)
 script_callbacks.on_ui_tabs(on_ui_tabs)
