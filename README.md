@@ -28,4 +28,5 @@ Created by [jtydhr88](https://github.com/jtydhr88), basing on [OpenAI Shap-E](ht
 - [3D Model/pose loader](https://github.com/jtydhr88/sd-3dmodel-loader) A custom extension for sd-webui that allows you to load your local 3D model/animation inside webui, or edit pose as well, then send screenshot to txt2img or img2img as your ControlNet's reference image.
 - [Canvas Editor](https://github.com/jtydhr88/sd-canvas-editor) A custom extension for sd-webui that integrated a full capability canvas editor which you can use layer, text, image, elements and so on, then send to ControlNet, basing on Polotno.
 - [StableStudio Adapter](https://github.com/jtydhr88/sd-webui-StableStudio) A custom extension for sd-webui to extend rest APIs to do some local operations, using in StableStudio.
+- [3D Editor](https://github.com/jtydhr88/sd-webui-3d-editor) A custom extension for sd-webui that with 3D modeling features (add/edit basic elements, load your custom model, modify scene and so on), then send screenshot to txt2img or img2img as your ControlNet's reference image, basing on ThreeJS editor.
 
