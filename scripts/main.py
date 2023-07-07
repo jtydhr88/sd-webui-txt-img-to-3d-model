@@ -125,9 +125,9 @@ def on_ui_tabs():
     with gr.Blocks(analytics_enabled=False) as shap_e:
         with gr.Row():
             with gr.Column():
-                mode = gr.Dropdown(["txt", "img"], label="Mode", value="img")
-                prompt_txt = gr.Textbox(label="Prompt", lines=2)
-                init_image = gr.Image(type="pil")
+                mode = gr.Dropdown(["txt", "img"], label="Mode", value="img", elem_id="tiTo3DModelMode")
+                prompt_txt = gr.Textbox(label="Prompt", lines=2, elem_id="tiTo3DModelPrompt")
+                init_image = gr.Image(type="pil", elem_id="tiTo3DModelInitImage")
                 batch_size_slider = gr.Slider(minimum=1, maximum=10, default=2, value=2, step=1, label="Batch Size",
                                               interactive=True)
                 use_karras = gr.Checkbox(label="Use Karras", value=True)
@@ -165,6 +165,7 @@ def on_ui_tabs():
             sink = gr.HTML(value='', visible=False)  # to suppress error in javascript
             jscall('getGeneratedHistory', get_generated_history, id, js, sink)
 
+        mode.change(None, mode, None, _js="modeChangeTITo3DModel")
 
         btn.click(fn=generate,
                   inputs=[mode, batch_size_slider, prompt_txt, use_karras, karras_steps_slider, init_image,

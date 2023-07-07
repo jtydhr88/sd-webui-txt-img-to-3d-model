@@ -90,6 +90,22 @@ let _r = 0;
         container.appendChild(text2);
     }
 
+    let tiTo3DModelPromptDiv = document.getElementById('tiTo3DModelPrompt');
+
+    tiTo3DModelPromptDiv.style.display = 'none';
+
+    let tiTo3DModelInitImageDiv = document.getElementById('tiTo3DModelInitImage');
+
+    window.modeChangeTITo3DModel = function(mode) {
+        if (mode === 'img') {
+            tiTo3DModelPromptDiv.style.display = 'none';
+            tiTo3DModelInitImageDiv.style.display = 'block';
+        }
+        else {
+            tiTo3DModelPromptDiv.style.display = 'block';
+            tiTo3DModelInitImageDiv.style.display = 'none';
+        }
+    };
 
     function to_gradio(v) {
         return [v, _r++];
