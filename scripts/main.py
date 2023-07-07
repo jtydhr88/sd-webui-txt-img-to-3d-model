@@ -242,6 +242,8 @@ def get_self_extension():
 def get_generated_history(type):
     outputs_path = os.path.join(os.getcwd(), "extensions/sd-webui-txt-img-to-3d-model/outputs")
 
+    os.makedirs(outputs_path, exist_ok=True)
+
     filenames = []
     for filename in os.listdir(outputs_path):
         if os.path.isfile(os.path.join(outputs_path, filename)):
